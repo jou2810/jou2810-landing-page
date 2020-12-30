@@ -27,21 +27,12 @@ const nav = document.querySelector("#navbar__list");
  *
  */
 
-function insertNavLink(section) {
-    // create a link
-    const htmlTextToAdd1 = `<a href="#section1" class="menu__link menu__link--active">Section 1</a>`;
-    const htmlTextToAdd2 = `<a href="#section2" class="menu__link menu__link--active">Section 2</a>`;
-    const htmlTextToAdd3 = `<a href="#section3" class="menu__link menu__link--active">Section 3</a>`;
-    const htmlTextToAdd4 = `<a href="#section4" class="menu__link menu__link--active">Section 4</a>`;
-    const htmlTextToAdd5 = `<a href="#section5" class="menu__link menu__link--active">Section 5</a>`;
-    // add it to the nav
-    nav.insertAdjacentHTML("beforeend", htmlTextToAdd1);
-    nav.insertAdjacentHTML("beforeend", htmlTextToAdd2);
-    nav.insertAdjacentHTML("beforeend", htmlTextToAdd3);
-    nav.insertAdjacentHTML("beforeend", htmlTextToAdd4);
-    nav.insertAdjacentHTML("beforeend", htmlTextToAdd5);
-
-  }
+function insertNavLink(navLinkName, sectionId) {
+  // create a link
+  const htmlTextToAdd = `<li><a href="#${sectionId}" class="menu__link">${navLinkName}</a></li>`;
+  // add it to the nav
+  nav.insertAdjacentHTML("beforeend", htmlTextToAdd);
+}
   
   function isTopSectionInViewport(el) {
     // get the coordinates of the element box from the viewport
@@ -102,7 +93,9 @@ function insertNavLink(section) {
   }
   
   // Scroll to section anchor ID using smooth scrollTO event
-  function smoothScroll(el) {
+  function smoothScroll(el) 
+  {
+    
     window.scrollTo({
       //scroll to element and account for sticky header offset
       top: getElementOffset(el).top - nav.offsetHeight,
@@ -116,7 +109,26 @@ function insertNavLink(section) {
     const htmlTextToAdd = `<a href="#" class="bottom__link hide">To top</a>`;
     document.body.insertAdjacentHTML("afterbegin", htmlTextToAdd);
   }
-  
+  function showBtnUp() {
+    // create and add the buttom to the DOM as hidden element
+    const btn = document.querySelector(".bottom__link");
+    // remove the button if absolute scrolling y is lower than browser window viewport
+    if (window.pageYOffset <= 0.6 * window.innerHeight) {
+      btn.classList.add("hide");
+    } else {
+      btn.classList.remove("hide");
+      // add event handler only if button is visible
+      btn.addEventListener("click", function(e) {
+        e.preventDefault();
+        // smooth scroll to top of page
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "smooth"
+        });
+      });
+    }
+  }
   // show navigation bar after delay is elapsed, when used with scroll events,
   // timer gets reset and until the user stops scrolling
   function hideNav(delay) {
@@ -142,6 +154,7 @@ function insertNavLink(section) {
     // Scroll to section on link click
     // using event delegation
     nav.addEventListener("click", function(e) {
+
       if (e.target.nodeName === "A") {
         e.preventDefault();
         // getting the clicked link
